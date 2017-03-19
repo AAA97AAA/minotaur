@@ -73,7 +73,7 @@ func minotaur (location: Term) -> Goal {
 
 func path (from: Term, to: Term, through: Term) -> Goal {
     return doors(from, through) && doors(through, to) ||
-            delayed (fresh { x in fresh { y in fresh { z in fresh
+            delayed (fresh { x in fresh { y in fresh { z in
               (through === path(from: x, to: y, through: z)) &&
               (path(from: x, to: y, through: z))
             }}})
@@ -84,5 +84,11 @@ func battery (through: Term, level: Term) -> Goal {
 }
 
 func winning (through: Term, level: Term) -> Goal {
-    // TODO
+    return delayed( fresh {x in fresh { y in fresh { z in
+          (through === path(from: x, to: y, through: z)) && // si le path est juste?? est ce que ça le vérifie si on fait ça, ou ça nous extrait juste les x, y, z?
+          (entrance(location: x)) && // on vérifie si l'entrée est juste
+          (exit(location: y)) && // on vérifie si la sortie est juste
+          (battery(through: through, level: Term)) // pas sûre de cette ligne, mais je voulais vérifier si on a assez de batterie pour faire le parcours
+
+    }}})
 }
