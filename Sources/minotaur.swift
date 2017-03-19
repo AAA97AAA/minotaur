@@ -38,23 +38,41 @@ func room (_ x: Int, _ y: Int) -> Term {
 }
 
 func doors (from: Term, to: Term) -> Goal {
-    // TODO
+  return (from === room(1,2) && to === room(1,1))
+      || (from === room(1,3) && to === room(1,2))
+      || (from === room(1,4) && to === room(1,3))
+      || (from === room(2,1) && to === room(1,1))
+      || (from === room(2,1) && to === room(2,2))
+      || (from === room(2,2) && to === room(2,3))
+      || (from === room(2,3) && to === room(2,4))
+      || (from === room(2,3) && to === room(3,3))
+      || (from === room(2,4) && to === room(1,4))
+      || (from === room(2,4) && to === room(3,4))
+      || (from === room(3,1) && to === room(2,1))
+      || (from === room(3,2) && to === room(3,1))
+      || (from === room(3,2) && to === room(2,2))
+      || (from === room(4,1) && to === room(3,1))
+      || (from === room(4,2) && to === room(3,2))
+      || (from === room(4,3) && to === room(3,3))
+      || (from === room(4,3) && to === room(4,2))
+      || (from === room(4,4) && to === room(4,3))
+
 }
 
 func entrance (location: Term) -> Goal {
-    // TODO
+    return (location === room(4,1)) || (location === room(4,4))
 }
 
 func exit (location: Term) -> Goal {
-    // TODO
+    return (location === room(1,1)) || (location === room(3,4))
 }
 
 func minotaur (location: Term) -> Goal {
-    // TODO
+    return (location === room(2,3))
 }
 
 func path (from: Term, to: Term, through: Term) -> Goal {
-    // TODO
+    return doors(from, through) && doors(through, to)
 }
 
 func battery (through: Term, level: Term) -> Goal {
