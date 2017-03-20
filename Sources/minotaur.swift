@@ -72,16 +72,20 @@ func minotaur (location: Term) -> Goal {
 }
 
 func path (from: Term, to: Term, through: Term) -> Goal {
-    return doors(from, through) && doors(through, to) ||
-            delayed (fresh { x in fresh { y in fresh { z in
-              (through === path(from: x, to: y, through: z)) &&
-              (path(from: x, to: y, through: z))
-            }}})
+    return doors(from: from, to: through) && doors(from: through,to: to) ||
+            delayed (fresh { x in fresh { y in
+              (through === List.cons(x, y)) &&
+              (doors(from: from, to: x)) &&
+              (path(from: x, to: to, through: y))
+            }})
 }
+
 
 func battery (through: Term, level: Term) -> Goal {
     // TODO
 }
+
+/*
 
 func winning (through: Term, level: Term) -> Goal {
     return delayed( fresh {x in fresh { y in fresh { z in
@@ -92,3 +96,5 @@ func winning (through: Term, level: Term) -> Goal {
 
     }}})
 }
+
+*/
