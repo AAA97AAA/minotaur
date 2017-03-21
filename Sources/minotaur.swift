@@ -117,17 +117,26 @@ func battery (through: Term, level: Term) -> Goal {
     })
 }
 
-/* TODO: a implémenter la fonction winning */
-/*
-func winning (through: Term, level: Term) -> Goal {
-    return delayed( fresh {x in fresh { y in fresh { z in
-          (through === List(x, )) &&
-          (through === path(from: x, to: y, through: z)) && // si le path est juste?? est ce que ça le vérifie si on fait ça, ou ça nous extrait juste les x, y, z?
-          (entrance(location: x)) && // on vérifie si l'entrée est juste
-          (exit(location: y)) && // on vérifie si la sortie est juste
-          (battery(through: through, level: Term)) // pas sûre de cette ligne, mais je voulais vérifier si on a assez de batterie pour faire le parcours
-
-    }}})
+/* Cette fonction retourne un Goal, on vérifie si le minotaur appartient au path */
+func is_Minotaur(through: Term) -> Goal {
+  return delayed ( fresh{ x in fresh { y in
+        (through === List.cons(x, y)) &&
+        /* on met un ou ci-dessous car il suffit que le minotaur apparaissent une fois
+           au moins
+        */
+        (minotaur(location: x) || is_Minotaur(through: y))
+  }})
 }
 
-*/
+func winning (through: Term, level: Term) -> Goal {
+  return battery(through: through, level: level) && // on check si on a assez de batterie pour faire le parcours
+         is_Minotaur(through: through) && // si le minotaur fait parti du parcours
+         delayed ( fresh { x in fresh { y in
+           /* on vérifie s'il existe x et y tel qu'il existe un chemin qui
+         commence à x et qui va à y par through qui est le parcours entré */
+              entrance(location: x) &&
+              exit(location: y) &&
+              path(from: x, to: y, through: through)
+          }})
+
+}

@@ -82,17 +82,60 @@ class minotaurTests: XCTestCase {
         XCTAssertEqual(resultsOf (goal: goal, variables: [through]).count, 1, "number of paths is incorrect")
     }
 
+    func testAslam1() {
+      // il n'existe pas de solution qui vérifie les conditions en 2 pas
+        let through = Variable (named: "through")
+        let goal = winning(through: through, level:toNat(2))
+        XCTAssertEqual(resultsOf (goal: goal, variables: [through]).count, 0, "number of paths is incorrect")
+    }
+
+    func testAslam2() {
+      /* sols
+        1 - en partant de (1,4) vers la sortie (4,3)
+        2 - (4,4) vers (4,3) (chemin direct)
+        3 - (4,4) vers (4,3) (détour)
+        4 - (4,4) vers (1,1)
+
+        chemin qui ne fonctionne pas par manque de batterie:
+        (4,4) vers (1,1) (détour)
+        (1,4) vers (1,1)
+    */
+        let through = Variable (named: "through")
+        let goal = winning(through: through, level:toNat(10))
+        XCTAssertEqual(resultsOf (goal: goal, variables: [through]).count, 4, "number of paths is incorrect")
+    }
+
+    func testAslam3() {
+      /* tous les sols avec nombre max de
+        1 - en partant de (1,4) vers la sortie (4,3) -----------> batterie: 7
+        2 - (4,4) vers (4,3) (chemin direct)  -----------> batterie: 8
+        3 - (4,4) vers (4,3) (détour)  -----------> batterie: 10
+        4 - (4,4) vers (1,1)  -----------> batterie: 11
+        5 - (4,4) vers (1,1) (détour) ----> le plus long  -----------> batterie: 13
+        6 - (1,4) vers (1,1)  -----------> batterie: 10
+    */
+        let through = Variable (named: "through")
+        let goal = winning(through: through, level:toNat(13))
+        XCTAssertEqual(resultsOf (goal: goal, variables: [through]).count, 6, "number of paths is incorrect")
+    }
+
 
     static var allTests : [(String, (minotaurTests) -> () throws -> Void)] {
+      print("Test:")
+
         return [
+
             ("testDoors", testDoors),
             ("testEntrance", testEntrance),
             ("testExit", testExit),
             ("testMinotaur", testMinotaur),
             ("testPath", testPath),
             ("testBattery", testBattery),
-            ("testLosing", testLosing),
+             ("testLosing", testLosing),
             ("testWinning", testWinning),
+            ("testAslam 1", testAslam1),
+            ("testAslam 2: 3 sols des 4 sols", testAslam2),
+            ("testAslam 2: 4 sols des 4 sols", testAslam3),
         ]
     }
 }
