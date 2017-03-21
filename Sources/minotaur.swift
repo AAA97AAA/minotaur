@@ -83,29 +83,42 @@ func path (from: Term, to: Term, through: Term) -> Goal {
   et on rappelle la fonction path depuis cette case la jusqu'au "to" avec le reste
   des élements de through.
   */
-    return  (doors(from: from, to: through) && doors(from: through,to: to)) ||
-            delayed (fresh { x in fresh { y in
-              (through === List.cons(x, y)) &&
-              (doors(from: from, to: x)) &&
-              (path(from: x, to: to, through: y))
-            }})
+  return ((doors(from: from, to: to)) && (through === List.empty)) ||
+
+          (delayed (fresh { x in fresh { y in
+            ((through === List.cons(x, y)) && (doors(from: from, to: x))
+          && (path(from: x, to: to, through: y))) }}))
+}
+
+/* J'ai créer une fonction parallèle pour soustraire un nombre du level qui est
+le premier cas */
+func battery_parallele(through: Term, level: Term) -> Goal {
+  return  (through === List.empty) ||
+          delayed (fresh { x in fresh { y in fresh { z in fresh { a in
+            /* on enleve un element du through et de level et on rappelle la fonction */
+            (through === List.cons(x, y)) &&
+            (level ≡ succ(z)) &&
+            /* pour éviter d'appeller battery_parallele avec level = zero, on
+             vérifie qu'il existe bien un nombre derriere */
+            (z === succ(a)) &&
+            (battery_parallele(through:y, level: z))
+
+          }}}})
 }
 
 
 func battery (through: Term, level: Term) -> Goal {
-    print("level \(level)") // a enlever si fonctionne
-    return  (through === List.empty) ||
-            delayed (fresh { x in fresh { y in fresh { z in
-              (through === List.cons(x, y)) &&
-              (level ≡ succ(z)) &&
-              (battery(through:y, level: z))
+    return  delayed (fresh { x in
+      /* On enlève le premier element pour la premiere case et on appelle la
+      fonction avec battery_parallele avec cela*/
+            (level === succ(x)) &&
+            battery_parallele(through: through, level: x)
 
-            }}})
+    })
 }
 
+/* TODO: a implémenter la fonction winning */
 /*
-
-
 func winning (through: Term, level: Term) -> Goal {
     return delayed( fresh {x in fresh { y in fresh { z in
           (through === List(x, )) &&
@@ -116,4 +129,5 @@ func winning (through: Term, level: Term) -> Goal {
 
     }}})
 }
+
 */
